@@ -85,6 +85,7 @@ if st.session_state.get("predict_clicked", False):
     with st.expander("Results", expanded=True):
         st.write("Predictions")
         st.dataframe(raw_predictions)
+        st.write("The below \"Waterfall\" plots display explanations for individual predictions. The bottom of a waterfall plot starts as the expected value of the model output, and then each row shows how the positive (red) or negative (blue) contribution of each feature moves the value from the expected model output to the model output for this prediction.")
 
         st.divider()
 

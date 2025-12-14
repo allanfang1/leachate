@@ -5,11 +5,15 @@ from google import genai
 def llm_explanation(shap_val, prediction_value, target_name):
     client = genai.Client()
 
-    all_features = list(zip(shap_val.feature_names, shap_val.values, shap_val.data))
-    
+    top_features = sorted(
+        zip(shap_val.feature_names, shap_val.values, shap_val.data),
+        key=lambda x: abs(x[1]),
+        reverse=True
+    )[:10]    
+
     features_text = "\n".join([
         f"- {name}: value={val:.2f}, impact={impact:.3f}"
-        for name, impact, val in all_features
+        for name, impact, val in top_features
     ])
 
     prompt = f"""Predicting leachate given rock properties and event conditions, using SHAP values for explanation:
@@ -19,10 +23,10 @@ def llm_explanation(shap_val, prediction_value, target_name):
 
         SHAP analysis: {features_text}
 
-        Write exactly 3 simple sentences explaining why this prediction was made. Focus on the rock properties and conditions. Use plain, accessible language for non computer science experts."""
+        Write 3 sentences explaining the most influential factors for this prediction. Concise, facts and data based insights for non computer science experts."""
     
     response = client.models.generate_content(
-        model="gemini-2.5-flash", contents=prompt
+        model="gemini-2.5-flash-lite", contents=prompt
     )
     return response.text
 
