@@ -5,9 +5,11 @@ from google import genai
 def llm_explanation(shap_val, prediction_value, target_name):
     client = genai.Client()
 
+    all_features = list(zip(shap_val.feature_names, shap_val.values, shap_val.data))
+    
     features_text = "\n".join([
         f"- {name}: value={val:.2f}, impact={impact:.3f}"
-        for name, impact, val in shap_val
+        for name, impact, val in all_features
     ])
 
     prompt = f"""Predicting leachate given rock properties and event conditions, using SHAP values for explanation:
