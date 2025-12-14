@@ -1,7 +1,28 @@
 import numpy as np
 import streamlit as st
+from google import genai
 
-# def llm_explanation(shap_val, prediction_value, target_name):
+def llm_explanation(shap_val, prediction_value, target_name):
+    client = genai.Client()
+
+    features_text = "\n".join([
+        f"- {name}: value={val:.2f}, impact={impact:.3f}"
+        for name, impact, val in shap_val
+    ])
+
+    prompt = f"""Predicting leachate given rock properties and event conditions, using SHAP values for explanation:
+
+        Target: {target_name}
+        Predicted Value: {prediction_value:.2f}
+
+        SHAP analysis: {features_text}
+
+        Write exactly 3 simple sentences explaining why this prediction was made. Focus on the rock properties and conditions. Use plain, accessible language for non computer science experts."""
+    
+    response = client.models.generate_content(
+        model="gemini-2.5-flash", contents=prompt
+    )
+    return response.text
 
 
 def simple_explanation(shap_val, target_name):

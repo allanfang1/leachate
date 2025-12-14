@@ -57,10 +57,10 @@ class LeachatePipeline:
                 model = self.best_models[target]
                 pred[target] = model.predict(df_row)[0]
                 
-                # val = model.predict(df_row)[0]
-                # if target in self.log_targets:
-                #     val = np.expm1(val)
-                # pred[target] = val
+                val = model.predict(df_row)[0]
+                if target in self.log_targets:
+                    val = np.expm1(val)
+                pred[target] = val
         else:
             for target in self.leachate_columns:
                 pred[target] = 0  # or np.nan
@@ -71,7 +71,7 @@ class LeachatePipeline:
         # Update lag values for next timestep
         for target in self.leachate_columns + ["Volume_leachate"]:
             val = pred[target] if target in pred else 0
-            for lag in self.lag_settings:
+            for lag in sorted(self.lag_settings, reverse=True):
                 lag_values[f"{target}_lag{lag}"] = val if lag == 1 else lag_values[f"{target}_lag{lag-1}"]
 
     return pd.DataFrame(results), pd.concat(processed_rows, ignore_index=True)

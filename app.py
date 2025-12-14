@@ -1,7 +1,7 @@
 import streamlit as st
 import joblib
 from leachate_pipeline import LeachatePipeline
-from explainer import simple_explanation
+from explainer import simple_explanation, llm_explanation
 import pandas as pd
 import numpy as np
 import shap
@@ -98,7 +98,9 @@ if st.session_state.get("predict_clicked", False):
             st.markdown("**Leaching Probability**")
             prob = pipeline.xgb_clf.predict_proba(X_shap.iloc[[i]])[0, 1]
             st.metric("Probability", f"{prob:.2%}")
-            st.info(simple_explanation(shap_values_clf[i], "Chance of leaching"))  
+            # st.info(simple_explanation(shap_values_clf[i], "Chance of leaching"))
+            st.info(llm_explanation(shap_values_clf[i], prob, "Chance of leaching"))  
+  
 
             fig, ax = plt.subplots(figsize=(6, 4))
             shap.plots.waterfall(shap_values_clf[i], show=False, max_display=7)
@@ -124,7 +126,9 @@ if st.session_state.get("predict_clicked", False):
                         val = raw_predictions.iloc[i][ion]
                         st.metric(f"{ion} Value", f"{val:.2f}")
 
-                        st.caption(simple_explanation(shap_values_reg[0], f"{ion} level"))
+                        # st.info(simple_explanation(shap_values_reg[0], f"{ion} level"))
+                        st.info(llm_explanation(shap_values_reg[0], val, f"{ion} level"))
+
             else:
                 st.caption("Predicted little to no leaching")
 
