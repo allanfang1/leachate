@@ -100,8 +100,10 @@ if st.session_state.get("predict_clicked", False):
             prob = pipeline.xgb_clf.predict_proba(X_shap.iloc[[i]])[0, 1]
             st.metric("Probability", f"{prob:.2%}")
             # st.info(simple_explanation(shap_values_clf[i], "Chance of leaching"))
-            st.info(llm_explanation(shap_values_clf[i], prob, "Chance of leaching"))  
-  
+            # st.info(llm_explanation(shap_values_clf[i], prob, "Chance of leaching"))  
+            if st.button("Get explanation", key=f"explain_prob_{i}"):
+                with st.spinner("Generating..."):
+                    st.info(llm_explanation(shap_values_clf[i], prob, "Chance of leaching"))
 
             fig, ax = plt.subplots(figsize=(6, 4))
             shap.plots.waterfall(shap_values_clf[i], show=False, max_display=7)
@@ -128,8 +130,10 @@ if st.session_state.get("predict_clicked", False):
                         st.metric(f"{ion} Value", f"{val:.2f}")
 
                         # st.info(simple_explanation(shap_values_reg[0], f"{ion} level"))
-                        st.info(llm_explanation(shap_values_reg[0], val, f"{ion} level"))
-
+                        # st.info(llm_explanation(shap_values_reg[0], val, f"{ion} level"))
+                        if st.button("Get explanation", key=f"explain_{i}_{ion}"):
+                            with st.spinner("Generating..."):
+                                st.info(llm_explanation(shap_values_reg[0], val, f"{ion} level"))
             else:
                 st.caption("Predicted little to no leaching")
 

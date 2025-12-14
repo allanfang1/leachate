@@ -26,7 +26,7 @@ def llm_explanation(shap_val, prediction_value, target_name):
         Write 3 sentences explaining the most influential factors for this prediction. Concise, facts and data based insights for non computer science experts."""
     
     response = client.models.generate_content(
-        model="gemini-2.0-flash", contents=prompt
+        model="gemini-2.0-flash-lite", contents=prompt
     )
     return response.text
 
