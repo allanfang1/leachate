@@ -1,4 +1,5 @@
-# [Rock Leachate Predictor](https://roches.streamlit.app/)
+# [Rock Leachate Predictor](https://github.com/allanfang1/leachate)
+# [Try it here](https://roches.streamlit.app/)
 
 A machine learning application that predicts rock leachate characteristics based on rock properties and environmental events.  Built with Streamlit and XGBoost, this tool helps predict both the probability of leaching events and the resulting ion concentrations. 
 
