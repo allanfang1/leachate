@@ -28,7 +28,8 @@ def llm_explanation(shap_val, prediction_value, target_name):
         Rules:
             - Base the explanation ONLY on the given feature values and SHAP contributions.
             - Do NOT speculate or claim an effect that contradicts the feature value.
-            - Explain the meaning in plain language
+            - Explain the meaning in plain language and as real-world conditions where applicable.
+            - Do NOT mention SHAP values, numbers, or percentages.
     """    
     
     response = client.models.generate_content(
