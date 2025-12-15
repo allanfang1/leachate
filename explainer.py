@@ -23,7 +23,7 @@ def llm_explanation(shap_val, prediction_value, target_name):
 
         SHAP analysis: {features_text}
 
-        Write 3 sentences explaining the most influential factors for this prediction. Concise, facts and data based insights for non computer science experts."""
+        Interpret the prediction and data to write 3 fact and data based sentences explaining the most influential factors for this prediction for non technical readers."""
     
     response = client.models.generate_content(
         model="gemini-2.5-flash-lite", contents=prompt
@@ -32,20 +32,13 @@ def llm_explanation(shap_val, prediction_value, target_name):
 
 
 def simple_explanation(shap_val, target_name):
-    """
-    Naively constructs a sentence based on the top contributing feature.
-    Assumes input data is scaled (Z-scores).
-    """
-    # 1. Find the feature with the biggest impact (positive or negative)
     top_idx = np.argmax(np.abs(shap_val.values))
     feature = shap_val.feature_names[top_idx]
     impact_val = shap_val.values[top_idx]
     feat_val = shap_val.data[top_idx]
 
-    # 2. Determine direction of the result (did this feature push it UP or DOWN?)
     res_dir = "high" if impact_val > 0 else "low"
 
-    # 3. Determine state of the feature (High/Low/Average based on Z-score)
     if feat_val > 0.1:
         feat_desc = "high"
     elif feat_val < -0.1:
