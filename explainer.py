@@ -16,14 +16,20 @@ def llm_explanation(shap_val, prediction_value, target_name):
         for name, impact, val in top_features
     ])
 
-    prompt = f"""Predicting leachate given rock properties and event conditions, using SHAP values for explanation:
+    prompt = f"""Predicting leachate given rock properties and event conditions, using SHAP output for explanation:
 
         Target: {target_name}
         Predicted Value: {prediction_value:.2f}
 
         SHAP analysis: {features_text}
 
-        Interpret the prediction and data to write 3 fact and data based sentences explaining the most influential factors for this prediction for non technical readers."""
+        Write 3 concise sentences explaining the most influential factors for this prediction for non-technical readers.
+
+        Rules:
+            - Base the explanation ONLY on the given feature values and SHAP contributions.
+            - Do NOT speculate or claim an effect that contradicts the feature value.
+            - Explain the meaning in plain language
+    """    
     
     response = client.models.generate_content(
         model="gemini-2.5-flash-lite", contents=prompt
